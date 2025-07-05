@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.Reflection.Metadata;
 
 namespace StudentManagementSystem
 {
@@ -93,12 +94,13 @@ namespace StudentManagementSystem
                 Console.WriteLine("[6] Cixis");
                 Console.WriteLine("[7] Bir telebenin qiymetlerine bax");
                 Console.WriteLine("[8] Loglara bax");
+                Console.WriteLine("[9] Qiymet deyish");
                 Console.WriteLine();
                 Console.WriteLine("------------------");
                 Console.Write("Seciminiz: ");
                 if (int.TryParse(Console.ReadLine(), out int cmnd))
                 {
-                    if (cmnd < 0 || cmnd > 8)
+                    if (cmnd < 0 || cmnd > 9)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Clear();
@@ -133,10 +135,14 @@ namespace StudentManagementSystem
                             UniversistetIdare.TelebeQiymetlerineBax(TelebeSiyahisi);
                             break;
                         case 8:
+                            Console.Clear();
                             foreach (var log in LogList)
                             {
                                 Console.WriteLine(log);
                             }
+                            break;
+                        case 9:
+                            UniversistetIdare.QiymetDeyish(TelebeSiyahisi,LogList);
                             break;
 
                     }
@@ -891,6 +897,67 @@ namespace StudentManagementSystem
                 }
             }
             while (true);
+        }
+
+        public void QiymetDeyish(List<Telebe> siyahi, List<string> logList)
+        {
+            Console.WriteLine("Qiymetini deyishmek istediyiniz telebeni secin: ");
+            var telebe = TelebeAxtar(siyahi);
+
+            Console.WriteLine($"{"ID",-4}| {"Fenn adi",-35}| {"Kredit sayi",-15}| {"Qiymet",-8}| {"Semestr",-12}");
+            for (int i = 0; i<telebe.Qiymetler.Count;i++)
+            {
+                Console.WriteLine($"{i,-4}| {telebe.Qiymetler[i].Fenn,-35}| {telebe.Qiymetler[i].KreditSayi,-15}| {telebe.Qiymetler[i].Qiymet,-8}| {telebe.Qiymetler[i].Semestr,-12}");
+            }
+            Console.WriteLine(new string('-', 72));
+
+            Console.WriteLine();
+            Console.WriteLine("Qiymetini deyishmek istediyin fennin Id-ni yaz: ");
+            int fennadi = int.Parse(Console.ReadLine());
+
+            Console.WriteLine($"{telebe.Qiymetler[fennadi].Fenn} fenninin qiymetini deyishirsiniz. Evvelki qiymet - {telebe.Qiymetler[fennadi].Qiymet}");
+            
+            
+            Console.Write("Yeni qiymet: ");
+
+            int kohneQiymet = telebe.Qiymetler[fennadi].Qiymet;
+            int giymet = 0;
+            bool qiymetCheck = true;
+
+            do
+            {
+                if (int.TryParse(Console.ReadLine(), out int qiymetInput))
+                {
+                    giymet = qiymetInput;
+                    qiymetCheck = false;
+
+                    if (qiymetInput < 0 || qiymetInput > 100)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("* Diapazondan kenar qiymet daxil etdin!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        qiymetCheck = true;
+                    }
+
+                    
+
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("* Qiymet eded olmalidir!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+            while (qiymetCheck);
+
+            var temp = telebe.Qiymetler[fennadi];
+            temp.Qiymet = giymet;
+            telebe.Qiymetler[fennadi] = temp;
+
+            string logText = $"[{DateTime.Now} - {telebe.Melumat.Name} adli telebenin {temp.Fenn} fenni qiymeti {kohneQiymet}-den {giymet}-e deyishdi.]";
+            LogAndEvent logAndEvent = new LogAndEvent();
+            logAndEvent.LogPrint(logText, logList);
         }
     }
 }
