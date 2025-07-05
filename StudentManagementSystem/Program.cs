@@ -957,8 +957,42 @@ namespace StudentManagementSystem
             Console.WriteLine(new string('-', 72));
 
             Console.WriteLine();
-            Console.WriteLine("Qiymetini deyishmek istediyin fennin Id-ni yaz: ");
-            int fennadi = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Qiymetini deyishmek istediyin fennin Id-ni yaz (dayandirmaq ucun [-1] daxil et): ");
+            int fennadi = 0;
+            bool fennadiCheck = false;
+
+            //Fenn secimi istenilir ve yoxlanilir
+            do
+            {
+                if (int.TryParse(Console.ReadLine(), out int input))
+                {
+                    fennadiCheck = false;
+
+                    if (input == -1) return;
+
+                    if (input < 0 || input > telebe.Qiymetler.Count)
+                    {
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("* Daxil etdiyin nomrede fenn yoxdur!");
+                        Console.ForegroundColor = ConsoleColor.White;                        
+                        fennadiCheck = true;
+                        continue;
+                    }
+
+                    fennadi = input;
+                } else
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("* Yalnish secim daxil etdiniz!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    fennadiCheck = true;
+                    continue;
+                }
+            } while (fennadiCheck);
+
 
             Console.WriteLine($"{telebe.Qiymetler[fennadi].Fenn} fenninin qiymetini deyishirsiniz. Evvelki qiymet - {telebe.Qiymetler[fennadi].Qiymet}");
 
