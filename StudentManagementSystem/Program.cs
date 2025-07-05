@@ -6,6 +6,8 @@ namespace StudentManagementSystem
 {
     internal class Program
     {
+        //Manual telebeler ve qiymetleri elave edilir
+
         public static List<Telebe> TelebeSiyahisi =
     new List<Telebe>
     {
@@ -74,15 +76,19 @@ namespace StudentManagementSystem
         }
     };
 
+        //Loglarin saxlanmasi ucun bosh siyahi yaradilir
+
         public static List<string> LogList = [];
 
         static void Main(string[] args)
         {
 
+            //Universitet metodlari ucun class cagirilir
             UniversistetSistemi UniversistetIdare = new UniversistetSistemi();
 
             do
             {
+                //Konsolun menyusu yazilir
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("=== UNİVERSİTET TELEBE IDARETEME SİSTEMİ ===");
                 Console.WriteLine();
@@ -97,6 +103,8 @@ namespace StudentManagementSystem
                 Console.WriteLine("[9] Qiymet deyish");
                 Console.WriteLine();
                 Console.WriteLine("------------------");
+
+                //Emr qebul edilir ve yoxlanilir
                 Console.Write("Seciminiz: ");
                 if (int.TryParse(Console.ReadLine(), out int cmnd))
                 {
@@ -110,6 +118,7 @@ namespace StudentManagementSystem
                         continue;
                     }
 
+                    //Emre uygun metod cagirilir
                     switch (cmnd)
                     {
                         case 1:
@@ -142,7 +151,7 @@ namespace StudentManagementSystem
                             }
                             break;
                         case 9:
-                            UniversistetIdare.QiymetDeyish(TelebeSiyahisi,LogList);
+                            UniversistetIdare.QiymetDeyish(TelebeSiyahisi, LogList);
                             break;
 
                     }
@@ -150,6 +159,8 @@ namespace StudentManagementSystem
 
 
                 }
+
+                //Yalnish emrler ucun mesaj gonderilir
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -168,6 +179,7 @@ namespace StudentManagementSystem
 
     }
 
+    //Enumlar yaradilir
     public enum IxtisasSahesi
     {
         Maliye,
@@ -197,6 +209,7 @@ namespace StudentManagementSystem
         Auditoriya_ile_is
     }
 
+    //Tapshiriqdan elave enum
     public enum Semestr
     {
         Birinci,
@@ -204,6 +217,7 @@ namespace StudentManagementSystem
         YayMektebi
     }
 
+    //Loglarin cap olunmagi ve log siyahisina artirilmagi ucun metod 
     public class LogAndEvent
     {
         public Action<string, List<string>> LogPrint = (logText, logList) =>
@@ -214,6 +228,8 @@ namespace StudentManagementSystem
                 logList.Add(logText);
             };
     }
+
+    //Structlar qurulur
     public struct TelebeSeхsiMelumati
     {
         public string Name { get; set; }
@@ -257,6 +273,7 @@ namespace StudentManagementSystem
 
     }
 
+    //Abstract class qurulur
     public abstract class UniversitetUzvu
     {
 
@@ -268,14 +285,19 @@ namespace StudentManagementSystem
 
     }
 
+
+    //Interface yaradilir
     public interface IQiymetIdareetmesi
     {
         public void QiymetElaveEt(int id, List<Telebe> siyahi, List<string> logList);
         public double OrtalamaQiymetHesabla();
     }
 
+
+    //Telebe classi yaradilir, hem abstarct classdan toreyir, hem de interfaceden protokollari alir
     public class Telebe : UniversitetUzvu, IQiymetIdareetmesi
     {
+        //ID konstruktorla avtomatik teyin edilir
         static int _telebeIdIzleme = 0;
 
         private int _id;
@@ -287,6 +309,8 @@ namespace StudentManagementSystem
         public TelebeStatusu Status { get; set; }
         public IxtisasSahesi Ixtisas { get; set; }
         public List<FennQiymeti> Qiymetler { get; set; } = [];
+
+        //En vacib add metodu yazilir, burada butun inputlarin ucun vacib yoxlamalar aparilir
         public override void Add(List<Telebe> telebeSiyahisi, List<string> logList)
         {
             Console.Clear();
@@ -295,7 +319,7 @@ namespace StudentManagementSystem
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("-----------");
 
-            //Ad daxil edilir            
+            //Ad daxil edilir ve yoxlanilir, minimum 3 simvol, bosh ola bilmez, reqem ola bilmez           
             string nameInput = "";
             bool nameCheck = false;
 
@@ -347,7 +371,7 @@ namespace StudentManagementSystem
             }
             while (nameCheck);
 
-            //Soyad daxil edilir
+            //Soyad daxil edilir, minimum 3 simvol, bosh ola bilmez, reqem ola bilmez
             string surnameInput = "";
             bool surnameCheck = false;
 
@@ -403,7 +427,7 @@ namespace StudentManagementSystem
             }
             while (surnameCheck);
 
-            //Dogum tarixi daxil edilir
+            //Dogum tarixi daxil edilir, tarixden bashqa format qebul etmir (metn ola bilmez, tarixe uygun olmayan reqem toplusu ola bilmez)
 
             Console.ForegroundColor = ConsoleColor.White;
             DateTime dateInput = DateTime.Now;
@@ -435,7 +459,7 @@ namespace StudentManagementSystem
             }
             while (dateCheck);
 
-            //Elaqe nomresi daxil edilir
+            //Elaqe nomresi daxil edilir (bosh ola bilmez)
 
             Console.ForegroundColor = ConsoleColor.White;
             string phoneInput = "";
@@ -460,7 +484,7 @@ namespace StudentManagementSystem
                 }
             } while (checkNumber);
 
-            //İxtisas secilir
+            //İxtisas secilir - sadece enum siyahisindan secile biler
             Console.ForegroundColor = ConsoleColor.White;
             IxtisasSahesi ixtisasInput = 0;
             int ixtisasSayi = Enum.GetNames(typeof(IxtisasSahesi)).Length;
@@ -510,7 +534,7 @@ namespace StudentManagementSystem
             }
             while (ixtisasCheck);
 
-            //Telebe statusu secilir
+            //Telebe statusu secilir - sadece enum siyahisindan secile biler
             Console.ForegroundColor = ConsoleColor.White;
             TelebeStatusu statusInput = 0;
             int statusSayi = Enum.GetNames(typeof(TelebeStatusu)).Length;
@@ -563,7 +587,7 @@ namespace StudentManagementSystem
             }
             while (statusCheck);
 
-
+            //Melumatlar telebe obyektine daxil edilir
             Melumat.Surname = surnameInput;
             Melumat.Name = nameInput;
             Melumat.BirthDate = dateInput;
@@ -571,20 +595,25 @@ namespace StudentManagementSystem
             Ixtisas = ixtisasInput;
             Status = statusInput;
 
+            //yeni telebe siyahiya artirilir
             telebeSiyahisi.Add(this);
 
+            //log metni hazirlanir
             string logText = $"[{DateTime.Now} - {nameInput} {surnameInput} adli telebel yaradildi. Status: {statusInput}]";
 
+            //log metni cap edilir ve siyahiya artirilir
             Console.Clear();
             LogAndEvent logAndEvent = new LogAndEvent();
             logAndEvent.LogPrint.Invoke(logText, logList);
         }
 
+        //Ortalama qiymet metodu yazilir
         public double OrtalamaQiymetHesabla()
         {
             return Qiymetler.Select(x => x.Qiymet).Average();
         }
 
+        //Qiymet elave etme metodu yazilir, burada da butun inputlar ucun vacib yoxlamalar aparilir
         public void QiymetElaveEt(int id, List<Telebe> siyahi, List<string> logList)
         {
             var telebe = siyahi.FirstOrDefault(t => t.Id == id);
@@ -593,16 +622,18 @@ namespace StudentManagementSystem
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("-----------");
 
-            //Fennin novu daxil edilir
+            //Fennin novu daxil edilir - sadece enum siyahisindan
             Console.WriteLine("Fenn novunu daxil edin (secimler asagidaki kimidir):");
             Console.WriteLine();
             int fennSayi = Enum.GetNames(typeof(FennNovu)).Length;
+
             for (int i = 0; i < fennSayi; i++)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine($"[{i}] - {Enum.GetNames(typeof(FennNovu))[i]}");
             }
             Console.ForegroundColor = ConsoleColor.White;
+
             Console.Write("Sizin seciminiz: ");
             FennNovu FennId;
             bool FennIdCheck = true;
@@ -633,7 +664,7 @@ namespace StudentManagementSystem
 
             } while (FennIdCheck);
 
-            //Kredit sayi daxil edilir
+            //Kredit sayi daxil edilir - sadece verilen diapazondan
             Console.WriteLine();
             Console.Write("Kredit sayini daxil edin (1-4): ");
             int kreditSayi;
@@ -663,7 +694,7 @@ namespace StudentManagementSystem
             }
             while (kreditSayiCheck);
 
-            //Qiymet daxil edilir
+            //Qiymet daxil edilir - sadece verilen diapazondan
             Console.WriteLine();
             Console.Write("Qiymeti daxil edin (0-100):");
             int qiymet = 0;
@@ -694,7 +725,7 @@ namespace StudentManagementSystem
             }
             while (qiymetCheck);
 
-            //Semestr daxil edilir
+            //Semestr daxil edilir - sadece enum siyahisindan
             Console.WriteLine();
             Console.Write("Hansi semestr? ");
             Semestr semestr = 0;
@@ -731,16 +762,19 @@ namespace StudentManagementSystem
             }
             while (semestrCheck);
 
-
+            //Melumatlar uzre yeni fennQiymeti yaradilir ve verilen telebenin modeline elave edilir.
             var yeniFennQiymeti = new FennQiymeti { Fenn = FennId, KreditSayi = kreditSayi, Qiymet = qiymet, Semestr = semestr };
             siyahi.FirstOrDefault(x => x.Id == id).Qiymetler.Add(yeniFennQiymeti);
 
+
+            //Logtext yaradilir ve cap edilib siyahiya artirilir
             Console.Clear();
             LogAndEvent logAndEvent = new LogAndEvent();
             string logText = $"[{DateTime.Now} - {FennId} adli Fenn, {kreditSayi} kredit sayi ile {qiymet} qiymet ile {semestr} semestre elave edildi. Telebe: {telebe.Melumat.Name}]";
             logAndEvent.LogPrint.Invoke(logText, logList);
         }
 
+        //Telebe statisiktasi metodu yaradilir  - Tuple istifadesi
         public override (int, double, string) GetTelebeStatistikasi(Telebe telebe)
         {
             double ob = telebe.Qiymetler.Any() ? telebe.Qiymetler.Select(x => x.Qiymet).Average() : 0;
@@ -753,14 +787,17 @@ namespace StudentManagementSystem
 
         }
 
+        //Telebe modelinin toString metodu override edilir
         public override string ToString()
         {
             return $"Id: {Id}. Melumatlar: {this.Melumat.ToString()} - {Status} - {Ixtisas}";
         }
     }
 
+    //Coxlu telebelerle ish ucun olan metodlar ucun UniversistetSistemi classi yaradilir
     public class UniversistetSistemi
     {
+        //Butun telebeleri cap etmek metodu yazilir
         public void ButunTelebelereBax(List<Telebe> telebe)
         {
             Console.Clear();
@@ -778,6 +815,7 @@ namespace StudentManagementSystem
 
         }
 
+        //Telebe axtarma metodu yazilir, burada telebe ID-ni daxil edene qeder onun adina, soyadina ve ixtisasina uygun axtarish etmek mumkundur
         public Telebe TelebeAxtar(List<Telebe> siyahi)
         {
             Telebe telebe = null;
@@ -815,6 +853,7 @@ namespace StudentManagementSystem
             while (true);
         }
 
+        //Telebe siyahsindan telebe secib onun qiymetlerine baxmaq ucun metod yazilir
         public void TelebeQiymetlerineBax(List<Telebe> siyahi)
         {
             var telebe = TelebeAxtar(siyahi);
@@ -827,6 +866,7 @@ namespace StudentManagementSystem
             Console.WriteLine(new string('-', 72));
         }
 
+        //Ortalama bali en yaxshi olan telebeni birbasha gosterir - Tuple istifadesi
         public ValueTuple<string, double, TelebeStatusu> GetEnYaxsiTelebe(List<Telebe> siyahi)
         {
             var list = siyahi.Where(a => a.Qiymetler.Any()).Select(x => new
@@ -841,8 +881,10 @@ namespace StudentManagementSystem
             return (telebe.Ad, telebe.Ortalama, telebe.Status);
         }
 
+        //2 secim uzre statistik melumatlari gosterir (ozu elave menyudur)
         public void Statistika(List<Telebe> siyahi)
         {
+            //ALT konsol menyu cap edilir
             do
             {
                 Console.WriteLine();
@@ -854,6 +896,7 @@ namespace StudentManagementSystem
 
                 int command = 0;
 
+                //Emr qebul edilir ve yoxlanilir
                 string input = Console.ReadLine();
 
                 if (input == "Exit")
@@ -874,6 +917,7 @@ namespace StudentManagementSystem
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
+                //Emre uygun metodlar cagilir
                 switch (command)
                 {
                     case 1:
@@ -899,13 +943,14 @@ namespace StudentManagementSystem
             while (true);
         }
 
+        //Qiymet deyishme metodu yazilir
         public void QiymetDeyish(List<Telebe> siyahi, List<string> logList)
         {
             Console.WriteLine("Qiymetini deyishmek istediyiniz telebeni secin: ");
             var telebe = TelebeAxtar(siyahi);
 
             Console.WriteLine($"{"ID",-4}| {"Fenn adi",-35}| {"Kredit sayi",-15}| {"Qiymet",-8}| {"Semestr",-12}");
-            for (int i = 0; i<telebe.Qiymetler.Count;i++)
+            for (int i = 0; i < telebe.Qiymetler.Count; i++)
             {
                 Console.WriteLine($"{i,-4}| {telebe.Qiymetler[i].Fenn,-35}| {telebe.Qiymetler[i].KreditSayi,-15}| {telebe.Qiymetler[i].Qiymet,-8}| {telebe.Qiymetler[i].Semestr,-12}");
             }
@@ -916,18 +961,21 @@ namespace StudentManagementSystem
             int fennadi = int.Parse(Console.ReadLine());
 
             Console.WriteLine($"{telebe.Qiymetler[fennadi].Fenn} fenninin qiymetini deyishirsiniz. Evvelki qiymet - {telebe.Qiymetler[fennadi].Qiymet}");
-            
-            
-            Console.Write("Yeni qiymet: ");
+
+
+            Console.Write("Yeni qiymet (dayandirmaq ucun [-1] daxil et): ");
 
             int kohneQiymet = telebe.Qiymetler[fennadi].Qiymet;
             int giymet = 0;
             bool qiymetCheck = true;
 
+            //Yeni qiymet yoxlanilaraq qebul edilir
             do
             {
                 if (int.TryParse(Console.ReadLine(), out int qiymetInput))
                 {
+                    if (qiymetInput == -1) return;
+
                     giymet = qiymetInput;
                     qiymetCheck = false;
 
@@ -938,9 +986,6 @@ namespace StudentManagementSystem
                         Console.ForegroundColor = ConsoleColor.White;
                         qiymetCheck = true;
                     }
-
-                    
-
                 }
                 else
                 {
@@ -951,10 +996,12 @@ namespace StudentManagementSystem
             }
             while (qiymetCheck);
 
+            //Qiymet obyekti struct oldugu ucun bu metodla deyishdirilir
             var temp = telebe.Qiymetler[fennadi];
             temp.Qiymet = giymet;
             telebe.Qiymetler[fennadi] = temp;
 
+            //Log metni yaradilir ve cap edilir ve siyahiya artirilir
             string logText = $"[{DateTime.Now} - {telebe.Melumat.Name} adli telebenin {temp.Fenn} fenni qiymeti {kohneQiymet}-den {giymet}-e deyishdi.]";
             LogAndEvent logAndEvent = new LogAndEvent();
             logAndEvent.LogPrint(logText, logList);
